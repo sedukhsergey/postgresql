@@ -1,26 +1,16 @@
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 
-const dbName = 'later.sqlite';
-
-const db = new sqlite3.Database(dbName);
-db.serialize(() => {
-  const sql = `
-    CREATE TABLE IF NOT EXISTS articles
-    (id integer primary key, title, content)
-  `;
-
-  const usersSql = `
-    CREATE TABLE IF NOT EXISTS users
-    (id integer primary key, name, city)
-`;
-  const tracksSql = `
-    CREATE TABLE IF NOT EXISTS users
-    (id integer primary key, name, composer, milliseconds)
-  `;
-
-  db.run(sql);
-  db.run(usersSql);
-  db.run(tracksSql);
+const pool = new Pool({
+  user: 'test',
+  host: 'localhost',
+  database: 'awesome',
+  password: 'password',
+  port: 5432,
 });
 
-module.exports = db;
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
+
+module.exports = pool;
