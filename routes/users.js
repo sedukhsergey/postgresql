@@ -3,6 +3,7 @@ const router = express.Router();
 const Users = require('../models/Users');
 
 /* GET users listing. */
+
 router.get('/', function(req, res, next) {
   if (req.query.id) {
     next();
@@ -11,43 +12,53 @@ router.get('/', function(req, res, next) {
   Users.all((err, data) => {
     if (err) {
       next(err);
-      return;
+      res.send(err)
+      next(err);
     }
+    console.log('data',data)
     res.send(data);
   })
 });
 
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
   if (req.query.id) {
-    Users.find(req.query.id, (err, data) => {
+    try {
+      const response = Users.find(req.query.id);
+      res.send(response)
+    } catch(err) {
+      next(err);
+      res.send(err);
+    }
+  }
+});
+
+
+router.post('/', (req, res, next) => {
+  if (req.body.name && req.body.email) {
+    Users.create(req.body, (err, data) => {
       if (err) {
         next(err);
         return;
       }
-      res.send(data || { data: null });
-    });
+      res.send(data);
+    })
+  } else {
+    res.status(500);
+    res.send()
   }
-});
-
-router.put('/', (req, res, next) => {
-  Users.put({...req.body, id: req.query.id}, (err, data) => {
-    if (err) {
-      next(err)
-      return;
-    }
-    res.send('Success')
-  })
 })
 
-router.post('/', (req, res, next) => {
-  Users.create(req.body, (err, data) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.send('Ok');
-  })
-});
+router.put('/', (req, res, next) => {
+  if (req.query.id) {
+    Users.update({...req.body, id: req.query.id}, (err, data) => {
+      if (err) {
+        next(err)
+        return;
+      }
+      res.send(data);
+    })
+  }
+})
 
 router.delete('/', (req, res, next) => {
   if (req.query.id) {
@@ -56,10 +67,9 @@ router.delete('/', (req, res, next) => {
         next(err);
         return;
       }
-      res.send('Deleted success');
-    });
+      res.send(data);
+    })
   }
-
 })
 
 module.exports = router;

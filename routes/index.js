@@ -1,9 +1,7 @@
-const articles = require('./articles');
 const users = require('./users');
-const tracks = require('./tracks');
+const articles = require('./articles');
 
 module.exports = {
-  articles,
   users,
-  tracks,
+  articles,
 };
