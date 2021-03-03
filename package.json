@@ -16,7 +16,7 @@
     "node-readability": "^3.0.0",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
-    "pug": "2.0.0-beta11",
+    "pug": "3.0.1",
     "sqlite3": "^4.1.1"
   }
 }
